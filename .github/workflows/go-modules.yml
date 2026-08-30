@@ -1,0 +1,108 @@
+name: go modules vendor dist
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: "Project name used for release and artifact names"
+        required: true
+        type: string
+      repository:
+        description: "Upstream GitHub repository to checkout"
+        required: true
+        type: string
+      version:
+        description: "Upstream version tag without the leading v"
+        required: true
+        type: string
+      ref_prefix:
+        description: "Prefix for the upstream git ref"
+        required: false
+        type: string
+        default: "v"
+      go_version_file:
+        description: "Path to the upstream go.mod file"
+        required: false
+        type: string
+        default: "go.mod"
+      go_version:
+        description: "Go version to use instead of reading go_version_file"
+        required: false
+        type: string
+        default: ""
+      module_path:
+        description: "Module path to initialize when upstream has no go.mod"
+        required: false
+        type: string
+        default: ""
+      working_directory:
+        description: "Directory to run go commands in"
+        required: false
+        type: string
+        default: "."
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout upstream ${{ inputs.project }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          ref: "${{ inputs.ref_prefix }}${{ inputs.version }}"
+
+      - name: Set up Go from version file
+        if: inputs.go_version == ''
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: ${{ inputs.go_version_file }}
+          check-latest: true
+
+      - name: Set up Go from version
+        if: inputs.go_version != ''
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ inputs.go_version }}
+          check-latest: true
+
+      - name: Create temporary go.mod
+        if: inputs.module_path != ''
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          if [ ! -f go.mod ]; then
+            go mod init "${{ inputs.module_path }}"
+          fi
+
+      - name: Resolve temporary go.mod
+        if: inputs.module_path != ''
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          GOMODCACHE: /tmp/go-mod
+        run: go mod tidy
+
+      - name: Download modules
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          GOMODCACHE: /tmp/go-mod
+        run: go mod download -x -modcacherw
+
+      - name: Create deps tarball
+        env:
+          XZ_OPT: "-T0 -9e"
+        run: |
+          find /tmp/go-mod/cache/download -type f -name '*.zip' -delete
+          LC_ALL=C TZ=UTC tar -C /tmp \
+            --mtime="1970-01-01" --sort=name --owner=250 --group=250 \
+            -acf "${{ inputs.project }}-${{ inputs.version }}-deps.tar.xz" go-mod
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "${{ inputs.project }}-${{ inputs.version }}"
+          name: "${{ inputs.project }} ${{ inputs.version }} vendor dist"
+          files: "${{ inputs.project }}-${{ inputs.version }}-deps.tar.xz"
+          overwrite_files: true
+          fail_on_unmatched_files: true

@@ -1,0 +1,19 @@
+name: net-analyzer/titus golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "titus version tag (e.g. 1.2.5)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: titus
+      repository: praetorian-inc/titus
+      version: ${{ inputs.version }}

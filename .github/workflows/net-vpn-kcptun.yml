@@ -1,0 +1,19 @@
+name: net-vpn/kcptun golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "kcptun version tag (e.g. 20241227)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: kcptun
+      repository: xtaci/kcptun
+      version: ${{ inputs.version }}
