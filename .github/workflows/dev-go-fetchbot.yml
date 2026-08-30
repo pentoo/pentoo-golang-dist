@@ -17,5 +17,4 @@ jobs:
       project: fetchbot
       repository: PuerkitoBio/fetchbot
       version: ${{ inputs.version }}
-      go_version: stable
       module_path: github.com/PuerkitoBio/fetchbot

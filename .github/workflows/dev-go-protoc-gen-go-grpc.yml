@@ -18,6 +18,4 @@ jobs:
       repository: grpc/grpc-go
       version: ${{ inputs.version }}
       ref_prefix: cmd/protoc-gen-go-grpc/v
-      go_version_file: cmd/protoc-gen-go-grpc/go.mod
-      go_version: stable
       working_directory: cmd/protoc-gen-go-grpc
