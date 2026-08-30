@@ -15,7 +15,6 @@ jobs:
     name: ${{ matrix.category }}/${{ matrix.project }} ${{ matrix.version }}
     strategy:
       fail-fast: false
-      max-parallel: 2
       matrix:
         include:
           - category: app-admin
@@ -51,7 +50,7 @@ jobs:
             version: "1.2.0"
             ref_prefix: cmd/protoc-gen-go-grpc/v
             go_version_file: cmd/protoc-gen-go-grpc/go.mod
-            go_version: ""
+            go_version: stable
             module_path: ""
             working_directory: cmd/protoc-gen-go-grpc
           - category: dev-go
@@ -60,7 +59,7 @@ jobs:
             version: "1.3.0"
             ref_prefix: cmd/protoc-gen-go-grpc/v
             go_version_file: cmd/protoc-gen-go-grpc/go.mod
-            go_version: ""
+            go_version: stable
             module_path: ""
             working_directory: cmd/protoc-gen-go-grpc
           - category: dev-vcs
@@ -291,6 +290,7 @@ jobs:
           - category: net-vpn
             project: kcptun
             repository: xtaci/kcptun
+            source_zip: https://proxy.golang.org/github.com/xtaci/kcptun/@v/v0.0.0-20260208051026-39935d5307f0.zip
             version: "20241227"
             ref_prefix: v
             go_version_file: go.mod
@@ -301,6 +301,7 @@ jobs:
     with:
       project: ${{ matrix.project }}
       repository: ${{ matrix.repository }}
+      source_zip: ${{ matrix.source_zip || '' }}
       version: ${{ matrix.version }}
       ref_prefix: ${{ matrix.ref_prefix }}
       go_version_file: ${{ matrix.go_version_file }}
