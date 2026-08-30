@@ -16,4 +16,6 @@ jobs:
     with:
       project: kcptun
       repository: xtaci/kcptun
+      source_zip: https://proxy.golang.org/github.com/xtaci/kcptun/@v/v0.0.0-20260208051026-39935d5307f0.zip
       version: ${{ inputs.version }}
+      go_version: stable
