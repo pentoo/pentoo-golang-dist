@@ -32,7 +32,7 @@ jobs:
             version: "0.0.14"
             ref_prefix: v
             go_version_file: go.mod
-            go_version: ""
+            go_version: stable
             module_path: ""
             working_directory: "."
           - category: dev-go
@@ -305,6 +305,6 @@ jobs:
       version: ${{ matrix.version }}
       ref_prefix: ${{ matrix.ref_prefix }}
       go_version_file: ${{ matrix.go_version_file }}
-      go_version: ${{ matrix.go_version }}
+      go_version: ${{ matrix.go_version || 'stable' }}
       module_path: ${{ matrix.module_path }}
       working_directory: ${{ matrix.working_directory }}

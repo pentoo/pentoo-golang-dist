@@ -31,10 +31,10 @@ on:
         type: string
         default: "go.mod"
       go_version:
-        description: "Go version to use instead of reading go_version_file"
+        description: "Go version to use for module download"
         required: false
         type: string
-        default: ""
+        default: stable
       module_path:
         description: "Module path to initialize when upstream has no go.mod"
         required: false
@@ -66,23 +66,22 @@ jobs:
           mkdir -p /tmp/source
           curl -fsSL "${{ inputs.source_zip }}" -o /tmp/source.zip
           unzip -q /tmp/source.zip -d /tmp/source
-          shopt -s dotglob nullglob
-          source_dirs=(/tmp/source/*)
-          if [ "${#source_dirs[@]}" -ne 1 ]; then
-            printf 'Expected one source directory in module zip, found %s\n' "${#source_dirs[@]}"
-            exit 1
+          mapfile -t module_roots < <(find /tmp/source -type f -name go.mod -printf '%h\n' | sort -u)
+          if [ "${#module_roots[@]}" -eq 1 ]; then
+            source_dir="${module_roots[0]}"
+          else
+            shopt -s dotglob nullglob
+            source_dirs=(/tmp/source/*)
+            if [ "${#source_dirs[@]}" -ne 1 ]; then
+              printf 'Expected one source directory in module zip, found %s\n' "${#source_dirs[@]}"
+              exit 1
+            fi
+            source_dir="${source_dirs[0]}"
           fi
-          cp -a "${source_dirs[0]}"/. "$GITHUB_WORKSPACE"/
+          shopt -s dotglob nullglob
+          cp -a "${source_dir}"/. "$GITHUB_WORKSPACE"/
 
-      - name: Set up Go from version file
-        if: inputs.go_version == ''
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: ${{ inputs.go_version_file }}
-          check-latest: true
-
-      - name: Set up Go from version
-        if: inputs.go_version != ''
+      - name: Set up Go
         uses: actions/setup-go@v6
         with:
           go-version: ${{ inputs.go_version }}
