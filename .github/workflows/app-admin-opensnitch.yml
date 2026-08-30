@@ -17,5 +17,4 @@ jobs:
       project: opensnitch
       repository: evilsocket/opensnitch
       version: ${{ inputs.version }}
-      go_version_file: daemon/go.mod
       working_directory: daemon

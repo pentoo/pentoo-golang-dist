@@ -25,11 +25,6 @@ on:
         required: false
         type: string
         default: "v"
-      go_version_file:
-        description: "Path to the upstream go.mod file"
-        required: false
-        type: string
-        default: "go.mod"
       go_version:
         description: "Go version to use for module download"
         required: false
