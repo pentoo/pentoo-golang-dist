@@ -1,0 +1,19 @@
+name: net-analyzer/pius golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "pius version tag (e.g. 1.1.5)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: pius
+      repository: praetorian-inc/pius
+      version: ${{ inputs.version }}

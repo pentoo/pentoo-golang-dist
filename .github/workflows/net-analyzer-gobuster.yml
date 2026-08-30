@@ -1,0 +1,19 @@
+name: net-analyzer/gobuster golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "gobuster version tag (e.g. 3.6.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: gobuster
+      repository: OJ/gobuster
+      version: ${{ inputs.version }}

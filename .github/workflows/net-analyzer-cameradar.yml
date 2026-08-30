@@ -1,0 +1,19 @@
+name: net-analyzer/cameradar golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "cameradar version tag (e.g. 6.2.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: cameradar
+      repository: ullaakut/cameradar
+      version: ${{ inputs.version }}

@@ -1,0 +1,21 @@
+name: dev-go/fetchbot golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "fetchbot version tag (e.g. 1.3)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: fetchbot
+      repository: PuerkitoBio/fetchbot
+      version: ${{ inputs.version }}
+      go_version: stable
+      module_path: github.com/PuerkitoBio/fetchbot
