@@ -1,0 +1,19 @@
+name: net-analyzer/nuclei golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "nuclei version tag (e.g. 3.11.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: nuclei
+      repository: projectdiscovery/nuclei
+      version: ${{ inputs.version }}

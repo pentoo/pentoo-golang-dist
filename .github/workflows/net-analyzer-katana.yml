@@ -1,0 +1,19 @@
+name: net-analyzer/katana golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "katana version tag (e.g. 1.6.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: katana
+      repository: projectdiscovery/katana
+      version: ${{ inputs.version }}

@@ -1,0 +1,19 @@
+name: net-analyzer/amass golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "amass version tag (e.g. 5.1.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: amass
+      repository: owasp-amass/amass
+      version: ${{ inputs.version }}

@@ -1,0 +1,20 @@
+name: net-analyzer/ruler golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "ruler version tag (e.g. 2.4.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: ruler
+      repository: sensepost/ruler
+      version: ${{ inputs.version }}
+      ref_prefix: ""

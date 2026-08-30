@@ -1,0 +1,19 @@
+name: net-analyzer/naabu golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "naabu version tag (e.g. 2.6.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: naabu
+      repository: projectdiscovery/naabu
+      version: ${{ inputs.version }}

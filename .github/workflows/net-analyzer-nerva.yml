@@ -1,0 +1,19 @@
+name: net-analyzer/nerva golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "nerva version tag (e.g. 1.37.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: nerva
+      repository: praetorian-inc/nerva
+      version: ${{ inputs.version }}

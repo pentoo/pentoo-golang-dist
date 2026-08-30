@@ -1,0 +1,20 @@
+name: app-admin/opensnitch golang vendor dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "opensnitch version tag (e.g. 1.8.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  golang-dist:
+    uses: ./.github/workflows/go-modules.yml
+    with:
+      project: opensnitch
+      repository: evilsocket/opensnitch
+      version: ${{ inputs.version }}
+      working_directory: daemon
